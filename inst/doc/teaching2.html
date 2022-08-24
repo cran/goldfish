@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="James Hollway" />
+
+
+<title>The Coordination Model and Extensions</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The Coordination Model and Extensions</h1>
+<h4 class="author">James Hollway</h4>
+
+
+
+<p>Example script prepared analyzing the Fisheries Agreements data with
+the <code>R</code> <code>goldfish</code> package. Models inspired by
+section 7 of:</p>
+<blockquote>
+<p>Stadtfeld, Hollway &amp; Block (2017), “Dynamic Network Actor Models:
+Investigating Coordination Ties through Time”, Sociological Methodology,
+2017, 47(1): 1-40. DOI: 10.1177/0081175017709295</p>
+</blockquote>
+<div id="step-0-load-package-and-data" class="section level1">
+<h1>Step 0: Load package and data</h1>
+<p>First, let’s make sure we’re starting with a clean slate and take the
+goldfish out of the bowl:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(goldfish)</span></code></pre></div>
+<p>This lazy loads several datasets, including the one we will now
+use:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;Fisheries_Treaties_6070&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ?Fisheries_Treaties_6070</span></span></code></pre></div>
+<p>Note that these objects are only ‘promised’ for the moment, but are
+available in the environment to be used, and more information will
+appear as you use them. You can find out more about this dataset, its
+format, and its origins in a couple of ERGM papers by calling its
+documentation.</p>
+</div>
+<div id="step-1-create-data-objects" class="section level1">
+<h1>Step 1: Create data objects</h1>
+<div id="step-1a-define-node-sets-and-attributes" class="section level2">
+<h2>Step 1a: Define node set(s) and attributes</h2>
+<p>We’ve loaded a dataset that defines its nodes and their attributes as
+a data frame.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(states)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     label present regime          gdp</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 162   SLB   FALSE     NA           NA</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 165   VCT    TRUE     NA 1.306663e-05</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 167   BLZ    TRUE     NA 2.807250e-05</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 169   KNA    TRUE     NA 1.236664e-05</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 170   BRN   FALSE     NA           NA</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 193   KIR   FALSE     NA           NA</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(states)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;data.frame&quot;</span></span></code></pre></div>
+<p>We need to define them as nodes so that goldfish knows what to do
+with them.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">defineNodes</span>(states)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(states)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of nodes: 6 </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of present nodes: 6 </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   label present regime         gdp</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   AND    TRUE     NA          NA</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2   DNK    TRUE     10 0.006248947</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3   FRA    TRUE      5 0.062651475</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4   DEU    TRUE     -9          NA</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5   ITA    TRUE     10 0.040385288</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6   LIE    TRUE     NA          NA</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(states)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;nodes.goldfish&quot; &quot;data.frame&quot;</span></span></code></pre></div>
+<p>As you can see, the structure is the same, but the added class helps
+goldfish interpret the data frame correctly.</p>
+<p>Next we want to link events to this nodeset to indicate how the
+attributes change. There are three attributes associated with this node
+set, and they all change:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sovchanges)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                     time node replace</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1165 1960-04-03 01:00:00  SEN    TRUE</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 99   1960-04-27 00:00:00  TGO    TRUE</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1317 1960-05-31 01:00:00  COD    TRUE</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1316 1960-05-31 01:00:00  MLI    TRUE</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 100  1960-06-20 00:00:00  MLI    TRUE</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 101  1960-06-26 00:00:00  MDG    TRUE</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(regchanges)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            time node replace</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 814  1960-01-02  LAO      -1</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 361  1960-01-16  CUB      NA</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 410  1960-01-16  VNM      -8</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1269 1960-04-04  SEN      -1</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1185 1960-04-16  KOR      NA</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1449 1960-04-27  TGO      -6</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gdpchanges)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           time node     replace</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 202 1961-01-01  DNK 0.006933842</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 203 1961-01-01  FRA 0.068346742</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 205 1961-01-01  ITA 0.044842760</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 207 1961-01-01  NLD 0.013493834</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 208 1961-01-01  PRT 0.003417517</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 211 1961-01-01  ESP 0.013834301</span></span></code></pre></div>
+<p>The first attribute, in the second column of the data frame, is
+special. It holds the (reserved) “present” variable that indicates
+whether nodes are available to send or receive ties.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(states<span class="sc">$</span>present) <span class="co"># or states[,2]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE TRUE TRUE TRUE TRUE TRUE</span></span></code></pre></div>
+<p>Some state nodes are not present (do not hold sovereign status) at
+the start of our study period. But we do have an additional list of
+events detailing how these states gain (and some lose) sovereign status
+during the study period. To make sure goldfish recognises these changes
+at the appropriate point, we “link” these events to the node set and
+attribute we have defined.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">linkEvents</span>(states, sovchanges, <span class="at">attribute =</span> <span class="st">&quot;present&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># If you call the object now, what happens?</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>states</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of nodes: 154 </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of present nodes: 137 </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dynamic attribute(s):    Linked events</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    present                  sovchanges </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   label present regime         gdp</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   AND    TRUE     NA          NA</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2   DNK    TRUE     10 0.006248947</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3   FRA    TRUE      5 0.062651475</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4   DEU    TRUE     -9          NA</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5   ITA    TRUE     10 0.040385288</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6   LIE    TRUE     NA          NA</span></span></code></pre></div>
+<p>That’s because the event list is only linked to the node set, to
+update it when necessary. You can see what is linked to which attribute
+here:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(states)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Classes &#39;nodes.goldfish&#39; and &#39;data.frame&#39;:   154 obs. of  4 variables:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ label  : chr  &quot;AND&quot; &quot;DNK&quot; &quot;FRA&quot; &quot;DEU&quot; ...</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ present: logi  TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ regime : num  NA 10 5 -9 10 NA 10 -9 -1 NA ...</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ gdp    : num  NA 0.00625 0.06265 NA 0.04039 ...</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;events&quot;)= chr &quot;sovchanges&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;dynamicAttributes&quot;)= chr &quot;present&quot;</span></span></code></pre></div>
+<p>We can continue on with our other two dynamic monadic variables. Try
+this for yourself now.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">linkEvents</span>(states, regchanges, <span class="at">attribute =</span> <span class="st">&quot;regime&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linkEvents</span>(gdpchanges, <span class="at">attribute =</span> <span class="st">&quot;gdp&quot;</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(states)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Classes &#39;nodes.goldfish&#39; and &#39;data.frame&#39;:   154 obs. of  4 variables:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ label  : chr  &quot;AND&quot; &quot;DNK&quot; &quot;FRA&quot; &quot;DEU&quot; ...</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ present: logi  TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ regime : num  NA 10 5 -9 10 NA 10 -9 -1 NA ...</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ gdp    : num  NA 0.00625 0.06265 NA 0.04039 ...</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;events&quot;)= chr [1:3] &quot;sovchanges&quot; &quot;regchanges&quot; &quot;gdpchanges&quot;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;dynamicAttributes&quot;)= chr [1:3] &quot;present&quot; &quot;regime&quot; &quot;gdp&quot;</span></span></code></pre></div>
+</div>
+<div id="step-1b-define-networks" class="section level2">
+<h2>Step 1b: Define networks</h2>
+<p>Next we want to define the dyadic or network elements: the bilateral
+fisheries agreements and contiguity between the state nodes.</p>
+<p>Since international fisheries management began before 1960, there
+were already several bilateral fisheries agreements in place at the
+start of our time period. This is shown in the matrix</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bilatnet[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>]  <span class="co"># head(bilatnet, n = c(12, 12))</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     AND DNK FRA DEU ITA LIE NLD PRT RUS SMR ESP SWE</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AND   0   0   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DNK   0   0   0   1   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; FRA   0   0   0   0   0   0   0   0   0   0   2   0</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DEU   0   1   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ITA   0   0   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LIE   0   0   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NLD   0   0   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PRT   0   0   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; RUS   0   0   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SMR   0   0   0   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ESP   0   0   2   0   0   0   0   0   0   0   0   0</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; SWE   0   0   0   0   0   0   0   0   0   0   0   0</span></span></code></pre></div>
+<p>Two things can be observed here. What are they?</p>
+<p>So that goldfish knows how to handle this network, we define it
+so:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bilatnet <span class="ot">&lt;-</span> <span class="fu">defineNetwork</span>(bilatnet, <span class="at">nodes =</span> states, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>We specify the nodes so that goldfish can check for consistency, and
+relate the network to that nodeset when needed.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(bilatnet)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;network.goldfish&quot; &quot;matrix&quot;           &quot;array&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bilatnet)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  &#39;network.goldfish&#39; num [1:154, 1:154] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;dimnames&quot;)=List of 2</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..$ : chr [1:154] &quot;AND&quot; &quot;DNK&quot; &quot;FRA&quot; &quot;DEU&quot; ...</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ..$ : chr [1:154] &quot;AND&quot; &quot;DNK&quot; &quot;FRA&quot; &quot;DEU&quot; ...</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;events&quot;)= chr(0) </span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;nodes&quot;)= chr &quot;states&quot;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  - attr(*, &quot;directed&quot;)= logi FALSE</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>bilatnet</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimensions: 154 154 </span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of ties (no weighted): 22 </span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): states </span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; It is a one-mode and undirected network</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows and columns</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     AND DNK FRA DEU ITA LIE</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AND   0   0   0   0   0   0</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DNK   0   0   0   1   0   0</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; FRA   0   0   0   0   0   0</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DEU   0   1   0   0   0   0</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ITA   0   0   0   0   0   0</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LIE   0   0   0   0   0   0</span></span></code></pre></div>
+<p>By stating that this is an undirected network, any updates will be
+forced to be symmetric.</p>
+<p>Now that goldfish recognises the matrix as a network, we can also
+associate an event list that updates it. We use precisely the same
+function as before (since we have defined our objects, goldfish knows
+what to do and how to check it).</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>bilatnet <span class="ot">&lt;-</span> <span class="fu">linkEvents</span>(bilatnet, bilatchanges, <span class="at">nodes =</span> states)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>bilatnet</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimensions: 154 154 </span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of ties (no weighted): 22 </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): states </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; It is a one-mode and undirected network</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Linked events: bilatchanges </span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows and columns</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     AND DNK FRA DEU ITA LIE</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AND   0   0   0   0   0   0</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DNK   0   0   0   1   0   0</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; FRA   0   0   0   0   0   0</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DEU   0   1   0   0   0   0</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ITA   0   0   0   0   0   0</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LIE   0   0   0   0   0   0</span></span></code></pre></div>
+<p>TASK: You should now be able to do the same with the initial
+contiguity network and the event list changing it.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>contignet <span class="ot">&lt;-</span> <span class="fu">defineNetwork</span>(contignet, <span class="at">nodes =</span> states, <span class="at">directed =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linkEvents</span>(contigchanges, <span class="at">nodes =</span> states)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(contignet)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;network.goldfish&quot; &quot;matrix&quot;           &quot;array&quot;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>contignet</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimensions: 154 154 </span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of ties (no weighted): 175 </span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): states </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; It is a one-mode and undirected network</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Linked events: contigchanges </span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows and columns</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     AND DNK FRA DEU ITA LIE</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AND   0   0   0   0   0   0</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DNK   0   0   1   0   0   0</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; FRA   0   1   0   0   1   0</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DEU   0   0   0   0   0   0</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ITA   0   0   1   0   0   0</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LIE   0   0   0   0   0   0</span></span></code></pre></div>
+</div>
+<div id="step-1c-define-dependent-events" class="section level2">
+<h2>Step 1c: Define dependent events</h2>
+<p>The final step in defining the data objects is to identify the
+dependent events. Since treaty dissolution is a rarer, more complex, and
+idiosyncratic process, we will only look at those events that create a
+treaty tie between countries.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>createBilat <span class="ot">&lt;-</span> <span class="fu">defineDependentEvents</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">events =</span> bilatchanges[bilatchanges<span class="sc">$</span>increment <span class="sc">==</span> <span class="dv">1</span>,], </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">nodes =</span> states, </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">defaultNetwork =</span> bilatnet</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Note that we define the default network to which this dependent event
+list applies, as well as the node set, so that structural effects can be
+interpreted correctly.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(createBilat)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;dependent.goldfish&quot; &quot;data.frame&quot;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>createBilat</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of events: 69 </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): states </span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Default network: bilatnet </span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          time sender receiver increment</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 36 1960-03-19    FIN      SWE         1</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 37 1960-06-23    FIN      RUS         1</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 38 1960-11-15    FIN      NOR         1</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 39 1960-11-17    GBR      NOR         1</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 40 1961-03-11    GBR      ISL         1</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 41 1961-07-19    DEU      ISL         1</span></span></code></pre></div>
+</div>
+</div>
+<div id="intermediate-step-visualisation" class="section level1">
+<h1>Intermediate step: Visualisation</h1>
+<p>While not a required part of the modeling process, we highly
+recommend the visualisation of your data for analytic and diagnostic
+purposes.</p>
+<p>goldfish includes wrappers for base R commands to help extract
+monadic and dyadic information for certain time points.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>?as.data.frame.nodes.goldfish</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>?as.matrix.network.goldfish</span></code></pre></div>
+<p>We can use these functions to visually compare our network at two (or
+more) different time periods using igraph.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(migraph)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># network at the beginning of the event sequence</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>startStates <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(states, <span class="at">time =</span> <span class="fu">as.numeric</span>(<span class="fu">as.POSIXct</span>(<span class="st">&quot;1960-01-02&quot;</span>)))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>startNet <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(bilatnet, <span class="at">time =</span> <span class="fu">as.numeric</span>(<span class="fu">as.POSIXct</span>(<span class="st">&quot;1960-01-02&quot;</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;present&quot;</span>, startStates<span class="sc">$</span>present) <span class="sc">|&gt;</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;regime&quot;</span>, startStates<span class="sc">$</span>regime) <span class="sc">|&gt;</span> </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;gdp&quot;</span>, startStates<span class="sc">$</span>gdp)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># network at the end of the event sequence</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>endStates <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(states, <span class="at">time =</span> <span class="fu">as.numeric</span>(<span class="fu">as.POSIXct</span>(<span class="st">&quot;1970-01-01&quot;</span>)))</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>endNet <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(bilatnet, <span class="at">time =</span> <span class="fu">as.numeric</span>(<span class="fu">as.POSIXct</span>(<span class="st">&quot;1970-01-01&quot;</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;present&quot;</span>, endStates<span class="sc">$</span>present) <span class="sc">|&gt;</span> </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;regime&quot;</span>, endStates<span class="sc">$</span>regime) <span class="sc">|&gt;</span> </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;gdp&quot;</span>, endStates<span class="sc">$</span>gdp)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="co"># logical value indicating if states where present and with agreements</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>isStateActiveStart <span class="ot">&lt;-</span> startStates<span class="sc">$</span>present <span class="sc">&amp;</span> <span class="fu">node_degree</span>(startNet) <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>isStateActiveEnd <span class="ot">&lt;-</span> endStates<span class="sc">$</span>present <span class="sc">&amp;</span> <span class="fu">node_degree</span>(endNet) <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>isStateActive <span class="ot">&lt;-</span> isStateActiveStart <span class="sc">|</span> isStateActiveEnd</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="co"># subset networks to active states</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>startNet <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(startNet, <span class="sc">!</span>isStateActive)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>endNet <span class="ot">&lt;-</span> <span class="fu">delete_vertices</span>(endNet, <span class="sc">!</span>isStateActive)</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggevolution</span>(startNet, endNet, <span class="at">layout =</span> <span class="st">&quot;fr&quot;</span>, <span class="at">based_on =</span> <span class="st">&quot;last&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" title="plot of chunk plot-teaching2" alt="plot of chunk plot-teaching2" style="display: block; margin: auto;" /></p>
+<p>What can we observe?</p>
+</div>
+<div id="step-2-specify-and-estimate-model" class="section level1">
+<h1>Step 2: Specify and estimate model</h1>
+<p>The second step is to specify and fit a model to this data. This step
+can be broken up into several stages:</p>
+<ul>
+<li>Step 2a. Specify a model formula from the effects and variables
+available</li>
+<li>Step 2b. Calculate the change statistics associated with these
+effects</li>
+<li>Step 2c. Fit an appropriate model to these statistics</li>
+</ul>
+<p>However, in goldfish we also have the option of accelerating this
+process and using memory more efficiently by combining these three
+sub-steps in one. Nonetheless, it can be helpful to think of 2a
+separately, and recognise steps 2b and 2c as goldfish does them.</p>
+<p>Let us first see how to specify the effects and which are currently
+available:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;goldfishEffects&quot;</span>)</span></code></pre></div>
+<p>The data and model specification is similar (though not the same as)
+Stadtfeld, Hollway, and Block 2017a</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>formula1 <span class="ot">&lt;-</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  createBilat <span class="sc">~</span> <span class="fu">inertia</span>(bilatnet) <span class="sc">+</span> <span class="fu">indeg</span>(bilatnet, <span class="at">ignoreRep =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                <span class="fu">trans</span>(bilatnet, <span class="at">ignoreRep =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                <span class="fu">tie</span>(contignet) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                <span class="fu">alter</span>(states<span class="sc">$</span>regime) <span class="sc">+</span> <span class="fu">diff</span>(states<span class="sc">$</span>regime) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                <span class="fu">alter</span>(states<span class="sc">$</span>gdp) <span class="sc">+</span> <span class="fu">diff</span>(states<span class="sc">$</span>gdp)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>estPrefs <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">returnIntervalLogL =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialDamping =</span> <span class="dv">40</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxIterations =</span> <span class="dv">30</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  partnerModel <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    formula1,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice_coordination&quot;</span>,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimationInit =</span> estPrefs</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    user  system elapsed </span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   96.06    7.30  104.80</span></span></code></pre></div>
+<p>Did the model converge? If not, you can restart the estimation
+process using the same formula and current parameter estimates:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>estPrefs <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">returnIntervalLogL =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialDamping =</span> <span class="dv">40</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxIterations =</span> <span class="dv">30</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialParameters =</span> <span class="fu">coef</span>(partnerModel)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>partnerModel <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  formula1,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice_coordination&quot;</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimationInit =</span> estPrefs</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(partnerModel)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = createBilat ~ inertia(bilatnet) + indeg(bilatnet, </span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     ignoreRep = TRUE) + trans(bilatnet, ignoreRep = TRUE) + tie(contignet) + </span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     alter(states$regime) + diff(states$regime) + alter(states$gdp) + </span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     diff(states$gdp), model = &quot;DyNAM&quot;, subModel = &quot;choice_coordination&quot;, </span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     estimationInit = estPrefs)</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Effects details :</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Object        ignoreRep</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia bilatnet               </span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg   bilatnet      B        </span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; trans   bilatnet      B        </span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie     contignet              </span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; alter   states$regime          </span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; diff    states$regime          </span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; alter   states$gdp             </span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; diff    states$gdp             </span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia  2.8318525  0.2698244 10.4952 &lt; 2.2e-16 ***</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg    0.4975580  0.0662465  7.5107 5.884e-14 ***</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; trans    0.3083405  0.2138535  1.4418  0.149350    </span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie      1.0821380  0.2195159  4.9297 8.237e-07 ***</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; alter    0.0047377  0.0143109  0.3311  0.740602    </span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; diff     0.0010369  0.0116815  0.0888  0.929268    </span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; alter    5.0326922  1.5429641  3.2617  0.001107 ** </span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; diff    -3.0780228  1.5940179 -1.9310  0.053485 .  </span></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 0.00029 </span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -386.36</span></span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  788.72 </span></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 791.12 </span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  806.6 </span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;choice_coordination&quot;</span></span></code></pre></div>
+<p>Let’s interpret… - Do states prefer partners with more partners? - Do
+states prefer partners that are contiguous? - Does transitivity matter?
+- Do states prefer rich or democratic partners? - Do states prefer
+similarly rich or democratic partners?</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>formula2 <span class="ot">&lt;-</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  createBilat <span class="sc">~</span> <span class="fu">inertia</span>(bilatnet, <span class="at">weighted =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                <span class="fu">indeg</span>(bilatnet) <span class="sc">+</span> <span class="fu">trans</span>(bilatnet) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                <span class="fu">tie</span>(contignet) <span class="sc">+</span> <span class="fu">alter</span>(states<span class="sc">$</span>regime) <span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                <span class="fu">diff</span>(states<span class="sc">$</span>regime) <span class="sc">+</span> <span class="fu">alter</span>(states<span class="sc">$</span>gdp) <span class="sc">+</span> <span class="fu">diff</span>(states<span class="sc">$</span>gdp)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>estPrefs <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">returnIntervalLogL =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialDamping =</span> <span class="dv">40</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxIterations =</span> <span class="dv">30</span>,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">engine =</span> <span class="st">&quot;default_c&quot;</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  tieModel <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    formula2,</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice_coordination&quot;</span>,</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimationInit =</span> estPrefs</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    user  system elapsed </span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   10.59    0.54   10.39</span></span></code></pre></div>
+</div>
+<div id="extensions" class="section level1">
+<h1>Extensions…</h1>
+<p>In the most recent version of <code>{goldfish}</code>, you will find
+some functions still under development.</p>
+<p>One set of functions is to help integrate the results of
+<code>{goldfish}</code> models with the wider world of statistical
+modeling.</p>
+<p>We have implemented some “tidymodels” (or rather
+<code>{broom}</code>) functions for extracting and printing the key
+results from goldfish results objects. Here is an example on the current
+results object:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;broom&#39; was built under R version 4.2.1</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pixiedust)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dust</span>(<span class="fu">tidy</span>(tieModel, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprinkle</span>(<span class="at">col =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">7</span>), <span class="at">round =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprinkle</span>(<span class="at">col =</span> <span class="dv">5</span>, <span class="at">fn =</span> <span class="fu">quote</span>(<span class="fu">pvalString</span>(value)))</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                  term estimate std.error statistic p.value conf.low conf.high</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  bilatnet inertia W    0.134     0.048     2.816   0.005    0.041     0.227</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      bilatnet indeg    0.568     0.058     9.854 &lt; 0.001    0.455     0.681</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      bilatnet trans    0.289     0.146      1.98   0.048    0.003     0.575</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       contignet tie    1.648     0.184     8.956 &lt; 0.001    1.288     2.009</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 states regime alter   -0.015     0.016    -0.957    0.34   -0.047     0.016</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  states regime diff    0.008     0.013     0.651    0.52   -0.017     0.033</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7    states gdp alter    6.089     1.516     4.015 &lt; 0.001   -0.047     0.016</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8     states gdp diff   -4.601     1.582    -2.908   0.004   -0.017     0.033</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(tieModel)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 5</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   logLik   AIC   BIC    df  nobs</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  -359.  733.  751.     8    69</span></span></code></pre></div>
+<p>Lastly, we have begun implementing further diagnostic functions that
+can help users identify areas for improving their model
+specification.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">examineOutliers</span>(tieModel)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; No outliers found.</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">examineChangepoints</span>(tieModel)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" title="plot of chunk examine" alt="plot of chunk examine" width="432" style="display: block; margin: auto;" /></p>
+<p>For more, please see Hollway (2020) Network Embeddedness and the Rate
+of Water Cooperation and Conflict.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

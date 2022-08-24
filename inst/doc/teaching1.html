@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Christoph Stadtfeld, James Hollway, Marion Hoffman, Alvaro Uzaheta, Kieran Mepham, Timon Elmer, Mirko Reul" />
+
+
+<title>DyNAM: How to start</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">DyNAM: How to start</h1>
+<h3 class="subtitle">Dynamic Network Actor Models using the goldfish
+package</h3>
+<h4 class="author">Christoph Stadtfeld, James Hollway, Marion Hoffman,
+Alvaro Uzaheta, Kieran Mepham, Timon Elmer, Mirko Reul</h4>
+
+
+
+<p>Example script analyzing the MIT Social Evolution data with
+<code>R</code>’s <code>goldfish</code> package. Models inspired by
+section 7 of:</p>
+<blockquote>
+<p>Stadtfeld &amp; Block (2017), “Interactions, Actors and Time: Dynamic
+Network Actor Models for Relational Events”, Sociological Science, 2017,
+4(1): 318-352. DOI: 10.15195/v4.a14</p>
+</blockquote>
+<div id="step-0-load-package-and-data" class="section level1">
+<h1>Step 0: Load package and data</h1>
+<p>First, we load the <code>goldfish</code> package and load the data.
+The data is loaded using lazy loading, i.e., the objects are only
+‘promised’ for the moment, but are available in the environment to be
+used, and more information will appear as you use them. You can find out
+more about this dataset, its format, and its origins in a couple of ERGM
+papers by callings its documentation:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(goldfish)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;Social_Evolution&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ?Social_Evolution</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(calls)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         time   sender receiver increment</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1220733470 Actor 72 Actor 50         1</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 1221102974 Actor 43 Actor 51         1</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 1221784293 Actor 43 Actor 51         1</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 1221785882 Actor 43 Actor 22         1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 1221787264 Actor 43 Actor 55         1</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 1221848443 Actor 43 Actor 51         1</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(actors)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     label present floor gradeType</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Actor 1    TRUE     3         5</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Actor 2    TRUE     5         1</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Actor 3    TRUE     5         2</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Actor 4    TRUE     2         2</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Actor 5    TRUE     4         1</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Actor 6    TRUE     4         2</span></span></code></pre></div>
+</div>
+<div id="preamble-run-a-quick-dynam-in-five-lines" class="section level1">
+<h1>Preamble: Run a quick DyNAM in five lines</h1>
+<p>We use <code>R</code> version 4.2.0 to compile the vignettes. The
+native pipe operator is available in <code>R</code> from version
+4.1.0.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>callNetwork <span class="ot">&lt;-</span> <span class="fu">defineNetwork</span>(<span class="at">nodes =</span> actors, <span class="at">directed =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="co"># 1</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linkEvents</span>(<span class="at">changeEvent =</span> calls, <span class="at">nodes =</span> actors) <span class="co"># 2</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>callsDependent <span class="ot">&lt;-</span> <span class="fu">defineDependentEvents</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">events =</span> calls, <span class="at">nodes =</span> actors,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">defaultNetwork =</span> callNetwork</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>mod00Rate <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> indeg <span class="sc">+</span> outdeg,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod00Rate)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ indeg + outdeg, model = &quot;DyNAM&quot;, </span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     subModel = &quot;rate&quot;)</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg  0.551445   0.066344  8.3119 &lt; 2.2e-16 ***</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; outdeg 0.263784   0.028386  9.2927 &lt; 2.2e-16 ***</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 2e-05 </span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -1750.9</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  3505.8 </span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 3505.9 </span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  3514 </span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;rate&quot;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>mod00Choice <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> inertia <span class="sc">+</span> recip <span class="sc">+</span> trans,</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice&quot;</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod00Choice)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ inertia + recip + trans, model = &quot;DyNAM&quot;, </span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     subModel = &quot;choice&quot;)</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia  5.19690    0.17397 29.8725 &lt; 2.2e-16 ***</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip    1.39802    0.17300  8.0812 6.661e-16 ***</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; trans   -0.23036    0.21554 -1.0687    0.2852    </span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 7e-05 </span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -696.72</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  1399.4 </span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 1399.5 </span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  1411.7 </span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;choice&quot;</span></span></code></pre></div>
+</div>
+<div id="step-1-create-data-objects" class="section level1">
+<h1>Step 1: Create data objects</h1>
+<div id="step-1a-define-node-sets-and-attributes" class="section level2">
+<h2>Step 1a: Define node set(s) and attributes</h2>
+<p>We’ve loaded a dataset that defines its nodes and their attributes as
+a data frame. Let’s check what we have first.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(actors)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;data.frame&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(actors)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     label present floor gradeType</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Actor 1    TRUE     3         5</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Actor 2    TRUE     5         1</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Actor 3    TRUE     5         2</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Actor 4    TRUE     2         2</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Actor 5    TRUE     4         1</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Actor 6    TRUE     4         2</span></span></code></pre></div>
+<p>Note that there are four column variables: <code>label</code> the
+identifier, <code>present</code>, the <code>floor</code> of residence,
+and <code>gradeType</code> their educational level (1 = freshmen to 5 =
+graduate). All of these columns will be recognized as individual
+attributes by goldfish.</p>
+<p>We need to define them as nodes so that <code>goldfish</code> knows
+what to do with them.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>actors <span class="ot">&lt;-</span> <span class="fu">defineNodes</span>(actors)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>actors</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of nodes: 84 </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of present nodes: 84 </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     label present floor gradeType</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Actor 1    TRUE     3         5</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Actor 2    TRUE     5         1</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Actor 3    TRUE     5         2</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Actor 4    TRUE     2         2</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Actor 5    TRUE     4         1</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Actor 6    TRUE     4         2</span></span></code></pre></div>
+<p>As you can see, the structure is the same, so we can still treat it
+like a data frame, but the added class helps goldfish interpret the data
+frame correctly.</p>
+</div>
+<div id="step-1b-define-networks" class="section level2">
+<h2>Step 1b: Define networks</h2>
+<p>Next we want to define the dyadic or network elements: calls between
+our actors.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(calls)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         time   sender receiver increment</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1220733470 Actor 72 Actor 50         1</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 1221102974 Actor 43 Actor 51         1</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 1221784293 Actor 43 Actor 51         1</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 1221785882 Actor 43 Actor 22         1</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 1221787264 Actor 43 Actor 55         1</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 1221848443 Actor 43 Actor 51         1</span></span></code></pre></div>
+<p>Note there are columns for <code>time</code>, <code>sender</code>,
+and <code>receiver</code>. <code>increment</code> is a reserved
+column.</p>
+<p>To tell goldfish this is a network, we must define it as such:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>?defineNetwork</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>callNetwork <span class="ot">&lt;-</span> <span class="fu">defineNetwork</span>(<span class="at">nodes =</span> actors, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>The argument <code>directed</code> is <code>TRUE</code> by default,
+but we need to specify the nodes so that <code>goldfish</code> can check
+for consistency and relate it to that nodeset as needed.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>callNetwork</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimensions: 84 84 </span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of ties (no weighted): 0 </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): actors </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; It is a one-mode and directed network</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows and columns</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          receiver</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sender    Actor 1 Actor 2 Actor 3 Actor 4 Actor 5 Actor 6</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 1       0       0       0       0       0       0</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 2       0       0       0       0       0       0</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 3       0       0       0       0       0       0</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 4       0       0       0       0       0       0</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 5       0       0       0       0       0       0</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 6       0       0       0       0       0       0</span></span></code></pre></div>
+<p>Note that we have not added any network data yet. By default,
+<code>defineNetwork()</code> just constructs an empty matrix with
+dimensions defined by the length of the nodeset(s). So we have an empty
+network as a starting state.</p>
+<p>Now that goldfish recognizes the matrix as a network, we can also
+associate an event list that updates it. To do this we use the
+<code>linkEvents()</code> function, which requires us to identify a
+goldfish object to be updated, the events that update it and, in this
+case, also the nodes that the events should relate to.
+<code>goldfish</code> checks the consistency of all this information and
+relates these objects to one another so that information can be called
+as needed.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>?linkEvents</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>callNetwork <span class="ot">&lt;-</span> <span class="fu">linkEvents</span>(<span class="at">x =</span> callNetwork, <span class="at">changeEvent =</span> calls, <span class="at">nodes =</span> actors)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>callNetwork</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimensions: 84 84 </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of ties (no weighted): 0 </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): actors </span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; It is a one-mode and directed network</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Linked events: calls </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows and columns</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          receiver</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sender    Actor 1 Actor 2 Actor 3 Actor 4 Actor 5 Actor 6</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 1       0       0       0       0       0       0</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 2       0       0       0       0       0       0</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 3       0       0       0       0       0       0</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 4       0       0       0       0       0       0</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 5       0       0       0       0       0       0</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 6       0       0       0       0       0       0</span></span></code></pre></div>
+<div id="task" class="section level3">
+<h3>Task</h3>
+<p>You should now be able to do the same with the friendship nomination
+network/event list. See the familiar columns <code>time</code>,
+<code>sender</code>, and <code>receiver</code>. The new column,
+<code>replace</code>, is an alternative treatment to
+<code>increment</code>. When an event occurs, goldfish will replace the
+value in the relevant cell with the value in this column instead of
+incrementing it. Friendship is thus a binary network.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(friendship)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         time   sender receiver replace</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1220918400 Actor 47  Actor 2       1</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 1220918400 Actor 57  Actor 2       1</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 1220918400  Actor 9 Actor 38       1</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 1220918400 Actor 68 Actor 40       1</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 1220918400 Actor 23 Actor 40       1</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 1220918400 Actor 49 Actor 40       1</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>friendshipNetwork <span class="ot">&lt;-</span> <span class="fu">defineNetwork</span>(<span class="at">nodes =</span> actors, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>friendshipNetwork <span class="ot">&lt;-</span> <span class="fu">linkEvents</span>(</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> friendshipNetwork, </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">changeEvents =</span> friendship, </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">nodes =</span> actors</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>friendshipNetwork</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimensions: 84 84 </span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of ties (no weighted): 0 </span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): actors </span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; It is a one-mode and directed network</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Linked events: friendship </span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows and columns</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          receiver</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sender    Actor 1 Actor 2 Actor 3 Actor 4 Actor 5 Actor 6</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 1       0       0       0       0       0       0</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 2       0       0       0       0       0       0</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 3       0       0       0       0       0       0</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 4       0       0       0       0       0       0</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 5       0       0       0       0       0       0</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Actor 6       0       0       0       0       0       0</span></span></code></pre></div>
+</div>
+</div>
+<div id="step-1c-define-dependent-events" class="section level2">
+<h2>Step 1c: Define dependent events</h2>
+<p>The final step in defining the data objects is to identify the
+dependent events. Here we would like to model as the dependent variable
+the calls between individuals. We specify the event list and the node
+list.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>?defineDependentEvents</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>callsDependent <span class="ot">&lt;-</span> <span class="fu">defineDependentEvents</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">events =</span> calls, <span class="at">nodes =</span> actors,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">defaultNetwork =</span> callNetwork</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>callsDependent</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Number of events: 439 </span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nodes set(s): actors </span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Default network: callNetwork </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; First 6 rows</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         time   sender receiver increment</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1220733470 Actor 72 Actor 50         1</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 1221102974 Actor 43 Actor 51         1</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 1221784293 Actor 43 Actor 51         1</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 1221785882 Actor 43 Actor 22         1</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 1221787264 Actor 43 Actor 55         1</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 1221848443 Actor 43 Actor 51         1</span></span></code></pre></div>
+<div id="intermediate-step-visualization" class="section level3">
+<h3>Intermediate step: Visualization</h3>
+<p>While not a required part of the modeling process, we highly
+recommend the visualization of your data for analytic and diagnostic
+purposes. <code>goldfish</code> includes wrappers for base
+<code>R</code> commands to help extract monadic and dyadic information
+for certain time points, <code>?as.data.frame.nodes.goldfish</code> and
+<code>?as.matrix.network.goldfish</code> .</p>
+<p>We can use these functions to visually compare our network at two (or
+more) different time periods using <code>migraph</code>. See the
+<code>migraph</code> package documentation for additional information
+about network visualization.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggraph)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(migraph)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The network at the beginning</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>callNetworkBgn <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(callNetwork)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">autographr</span>(callNetworkBgn, <span class="at">labels =</span> <span class="cn">FALSE</span>, <span class="at">layout =</span> <span class="st">&quot;fr&quot;</span>)</span></code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt />
+<p class="caption">plot of chunk plot-teaching1</p>
+</div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The network at half time</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>callNetworkHlf <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(callNetwork,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">time =</span> calls<span class="sc">$</span>time[<span class="fu">floor</span>(<span class="fu">nrow</span>(calls) <span class="sc">/</span> <span class="dv">2</span>)]) <span class="sc">|&gt;</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;floor&quot;</span>, actors<span class="sc">$</span>floor)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">autographr</span>(callNetworkHlf, <span class="at">labels =</span> <span class="cn">FALSE</span>, <span class="at">layout =</span> <span class="st">&quot;fr&quot;</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(floor)), <span class="at">size =</span> <span class="dv">2</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt />
+<p class="caption">plot of chunk plot-teaching1</p>
+</div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The network at the end</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>callNetworkEnd <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(callNetwork, <span class="at">time =</span> <span class="fu">max</span>(calls<span class="sc">$</span>time) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_node_attribute</span>(<span class="st">&quot;floor&quot;</span>, actors<span class="sc">$</span>floor)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">autographr</span>(callNetworkEnd, <span class="at">labels =</span> <span class="cn">FALSE</span>, <span class="at">layout =</span> <span class="st">&quot;fr&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(floor)), <span class="at">size =</span> <span class="dv">2</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt />
+<p class="caption">plot of chunk plot-teaching1</p>
+</div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The tie strength at the end</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">as.matrix</span>(callNetwork, <span class="at">time =</span> <span class="fu">max</span>(calls<span class="sc">$</span>time) <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    0    1    2    3    4    6    7    8    9   10   11   13   15   64  115 </span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6972   36   13   10    8    1    5    3    1    1    1    2    1    1    1</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="step-2-specify-and-estimate-model" class="section level1">
+<h1>Step 2: Specify and estimate model</h1>
+<p>The second step is to specify and fit a model to this data. This step
+can be broken up into several stages:</p>
+<ul>
+<li><p><strong>Step 2a</strong>. <em>Formula</em>: Specify a model
+formula from the effects and variables available</p></li>
+<li><p><strong>Step 2b</strong>. <em>Preprocessing</em>: Calculate the
+change statistics associated with these effects</p></li>
+<li><p><strong>Step 2c</strong>. <em>Estimation</em>: Fit an appropriate
+model to these statistics</p></li>
+</ul>
+<p>However, in goldfish we also have the option of accelerating this
+process and using memory more efficiently by combining these three
+sub-steps in one. Nonetheless, it can be helpful to think of 2a
+separately, and recognize steps 2b and 2c as goldfish does them.</p>
+<div id="step-2a.-formula" class="section level2">
+<h2>Step 2a. Formula</h2>
+<p>We specify our model using the standard R formula format like:</p>
+<p><code>goldfish_dependent ~ effects(process_state_element)</code></p>
+<p>We can see which effects are currently available and how to specify
+them here:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;goldfishEffects&quot;</span>)</span></code></pre></div>
+<p>Let’s start with the simplest model we can imagine:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>simpleFormulaChoice <span class="ot">&lt;-</span> callsDependent <span class="sc">~</span> <span class="fu">tie</span>(friendshipNetwork)</span></code></pre></div>
+<p>What are we testing here? Do individuals call their friends more than
+non-friends?</p>
+</div>
+<div id="step-2b-and-2c.-preprocessing-and-estimation" class="section level2">
+<h2>Step 2b and 2c. Preprocessing and Estimation</h2>
+<p>Now to estimate this model, we use the <code>?estimate</code>
+function. For now, only need to worry about the <code>formula</code> and
+the <code>model</code>, <code>subModel</code> type (DyNAM-choice).</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mod01Choice <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  simpleFormulaChoice,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice&quot;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod01Choice)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ tie(friendshipNetwork), model = &quot;DyNAM&quot;, </span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     subModel = &quot;choice&quot;)</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie  4.02538    0.12513   32.17 &lt; 2.2e-16 ***</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 0 </span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -1288.7</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  2579.4 </span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 2579.4 </span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  2583.5 </span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;choice&quot;</span></span></code></pre></div>
+<p>Ok, as fascinating as that was, perhaps we can test how robust this
+finding is in the presence of plausible controls.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>complexFormulaChoice <span class="ot">&lt;-</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> <span class="fu">inertia</span>(callNetwork) <span class="sc">+</span> <span class="fu">recip</span>(callNetwork) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">tie</span>(friendshipNetwork) <span class="sc">+</span> <span class="fu">recip</span>(friendshipNetwork) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">same</span>(actors<span class="sc">$</span>gradeType) <span class="sc">+</span> <span class="fu">same</span>(actors<span class="sc">$</span>floor)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>mod02Choice <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  complexFormulaChoice,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice&quot;</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod02Choice)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ inertia(callNetwork) + recip(callNetwork) + </span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     tie(friendshipNetwork) + recip(friendshipNetwork) + same(actors$gradeType) + </span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     same(actors$floor), model = &quot;DyNAM&quot;, subModel = &quot;choice&quot;)</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Effects details :</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Object           </span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia callNetwork      </span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip   callNetwork      </span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie     friendshipNetwork</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip   friendshipNetwork</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same    actors$gradeType </span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same    actors$floor     </span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia  4.42057    0.19225 22.9936 &lt; 2.2e-16 ***</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip    0.27151    0.19735  1.3758  0.168895    </span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie      1.28779    0.25673  5.0160 5.275e-07 ***</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip    0.68625    0.22930  2.9928  0.002765 ** </span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same     0.69847    0.17607  3.9670 7.279e-05 ***</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same    -0.28700    0.16618 -1.7271  0.084155 .  </span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 0 </span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -637.96</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  1287.9 </span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 1288.1 </span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  1312.4 </span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;choice&quot;</span></span></code></pre></div>
+<div id="rate-model" class="section level3">
+<h3>Rate model</h3>
+<p>How do individual properties affect the rate of action of
+individuals? (Step 1 of the model)</p>
+<p>Let us again define a simple formula that only depends on
+individuals’ degree in the friendship network</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>simpleFormulaRate <span class="ot">&lt;-</span> callsDependent <span class="sc">~</span> <span class="fu">indeg</span>(friendshipNetwork)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>mod01Rate <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  simpleFormulaRate,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div id="remark" class="section level4">
+<h4>Remark:</h4>
+<p>Sometimes, the default values for the algorithm are not enough to
+reach convergence. We can remedy this by increasing the number of
+iterations:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mod01Rate <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  simpleFormulaRate, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">maxIterations =</span> <span class="dv">40</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod01Rate)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ indeg(friendshipNetwork), model = &quot;DyNAM&quot;, </span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     subModel = &quot;rate&quot;, estimationInit = list(maxIterations = 40))</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg 0.157370   0.012699  12.392 &lt; 2.2e-16 ***</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 0 </span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -1868.1</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  3738.3 </span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 3738.3 </span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  3742.3 </span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;rate&quot;</span></span></code></pre></div>
+<p>What if we include additional structural effects? Let us add the in
+and out degree of the nodes in the call network</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>complexFormulaRate <span class="ot">&lt;-</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> <span class="fu">indeg</span>(callNetwork) <span class="sc">+</span> <span class="fu">outdeg</span>(callNetwork) <span class="sc">+</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">indeg</span>(friendshipNetwork) </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>mod02Rate <span class="ot">&lt;-</span> <span class="fu">estimate</span>(complexFormulaRate, <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod02Rate)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ indeg(callNetwork) + outdeg(callNetwork) + </span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     indeg(friendshipNetwork), model = &quot;DyNAM&quot;, subModel = &quot;rate&quot;)</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Effects details :</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        Object           </span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg  callNetwork      </span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; outdeg callNetwork      </span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg  friendshipNetwork</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg  0.454676   0.070918  6.4113 1.443e-10 ***</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; outdeg 0.240231   0.029494  8.1452 4.441e-16 ***</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg  0.060809   0.015464  3.9324 8.409e-05 ***</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 2e-05 </span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -1743.2</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  3492.5 </span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 3492.5 </span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  3504.7 </span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;rate&quot;</span></span></code></pre></div>
+</div>
+<div id="right-censored-intervals" class="section level4">
+<h4>Right-censored intervals</h4>
+<p>Recall that it is important to add a time intercept when estimating
+models with right-censored intervals (as discussed in Stadtfeld &amp;
+Block, 2017). Adding an intercept is as easy as including a 1 to the
+formula:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>interceptFormulaRate <span class="ot">&lt;-</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">indeg</span>(callNetwork) <span class="sc">+</span> <span class="fu">outdeg</span>(callNetwork) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">indeg</span>(friendshipNetwork)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>mod03Rate <span class="ot">&lt;-</span> <span class="fu">estimate</span>(interceptFormulaRate, <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod03Rate)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ 1 + indeg(callNetwork) + outdeg(callNetwork) + </span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     indeg(friendshipNetwork), model = &quot;DyNAM&quot;, subModel = &quot;rate&quot;)</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Effects details :</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           Object           </span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Intercept                  </span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg     callNetwork      </span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; outdeg    callNetwork      </span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg     friendshipNetwork</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Estimate Std. Error   z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Intercept -14.335641   0.094257 -152.0912 &lt; 2.2e-16 ***</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg       0.568475   0.067244    8.4540 &lt; 2.2e-16 ***</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; outdeg      0.314266   0.030898   10.1712 &lt; 2.2e-16 ***</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; indeg       0.047770   0.015148    3.1535  0.001613 ** </span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 0 </span></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -5984.3</span></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  11977 </span></span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 11977 </span></span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  11993 </span></span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;rate&quot;</span></span></code></pre></div>
+<p>Note that <span class="math inline">\(1 /
+\exp({\beta_{intercept}})\)</span> is the waiting time without any
+covariates, or how long it takes to make the next phone call if
+everything else is set to 0. Therefore, the larger the intercept the
+shorter the waiting time. For example, an intercept of -14 means a
+waiting time of <span class="math inline">\(1 / e^{-14} = 334\)</span>
+hours. The baseline waiting time between two events in hours:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>mod03RateCoef <span class="ot">&lt;-</span> <span class="fu">coef</span>(mod03Rate)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> <span class="fu">exp</span>(mod03RateCoef[[<span class="st">&quot;Intercept&quot;</span>]]) <span class="sc">/</span> <span class="dv">3600</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 467.291</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># or days:</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> <span class="fu">exp</span>(mod03RateCoef[[<span class="st">&quot;Intercept&quot;</span>]]) <span class="sc">/</span> <span class="dv">86400</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 19.47046</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># But what if it is not just a random call?</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Expected waiting time of those who have five outgoing call ties (five different actors)</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> <span class="fu">exp</span>(</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  mod03RateCoef[[<span class="st">&quot;Intercept&quot;</span>]] <span class="sc">+</span> mod03RateCoef[[<span class="st">&quot;outdeg&quot;</span>]] <span class="sc">*</span> <span class="dv">5</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">/</span> <span class="dv">3600</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 97.08854</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Expected waiting time of those who have five outgoing and incoming call ties (five different actors)</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> <span class="fu">exp</span>(</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  mod03RateCoef[[<span class="st">&quot;Intercept&quot;</span>]] <span class="sc">+</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    mod03RateCoef[[<span class="st">&quot;outdeg&quot;</span>]] <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    mod03RateCoef[[<span class="st">&quot;indeg&quot;</span>]] <span class="sc">*</span> <span class="dv">5</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">/</span> <span class="dv">3600</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 5.658994</span></span></code></pre></div>
+</div>
+</div>
+<div id="windows" class="section level3">
+<h3>Windows</h3>
+<p>Remember our <code>callNetwork</code> process state accumulates
+actions in time, but some older actions may no longer be relevant to
+current action. Let’s see whether it is really just recent partners that
+matter by adding extra effects with a window of… how long? Let us try 5
+minutes <span class="math inline">\(= 5 * 60 = 300s\)</span></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>windowFormulaRate <span class="ot">&lt;-</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">indeg</span>(callNetwork) <span class="sc">+</span> <span class="fu">outdeg</span>(callNetwork) <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">indeg</span>(callNetwork, <span class="at">window =</span> <span class="dv">300</span>) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">outdeg</span>(callNetwork, <span class="at">window =</span> <span class="dv">300</span>) <span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">indeg</span>(friendshipNetwork)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>mod04Rate <span class="ot">&lt;-</span> <span class="fu">estimate</span>(windowFormulaRate, <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod04Rate)</span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Call:
+#&gt; estimate(x = callsDependent ~ 1 + indeg(callNetwork) + outdeg(callNetwork) + 
+#&gt;     indeg(callNetwork, window = 300) + outdeg(callNetwork, window = 300) + 
+#&gt;     indeg(friendshipNetwork), model = &quot;DyNAM&quot;, subModel = &quot;rate&quot;, 
+#&gt;     estimationInit = list(engine = &quot;default&quot;))
+#&gt; 
+#&gt; 
+#&gt; Effects details :
+#&gt;           Object            window
+#&gt; Intercept                         
+#&gt; indeg     callNetwork             
+#&gt; outdeg    callNetwork             
+#&gt; indeg     callNetwork       300   
+#&gt; outdeg    callNetwork       300   
+#&gt; indeg     friendshipNetwork       
+#&gt; 
+#&gt; Coefficients :
+#&gt;             Estimate Std. Error   z-value  Pr(&gt;|z|)    
+#&gt; Intercept -14.530750   0.101676 -142.9125 &lt; 2.2e-16 ***
+#&gt; indeg       0.245045   0.070682    3.4669 0.0005266 ***
+#&gt; outdeg      0.364576   0.032556   11.1985 &lt; 2.2e-16 ***
+#&gt; indeg       5.295709   0.139463   37.9722 &lt; 2.2e-16 ***
+#&gt; outdeg     -0.767499   0.116642   -6.5800 4.706e-11 ***
+#&gt; indeg       0.083772   0.015289    5.4794 4.268e-08 ***
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt;   Converged with max abs. score of 1e-05 
+#&gt;   Log-Likelihood: -5475.9
+#&gt;   AIC:  10964 
+#&gt;   AICc: 10964 
+#&gt;   BIC:  10992 
+#&gt;   model: &quot;DyNAM&quot; subModel: &quot;rate&quot;</code></pre>
+<p>Of course, you can also add windows to the choice formula!</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>windowFormulaChoice <span class="ot">&lt;-</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> <span class="fu">inertia</span>(callNetwork) <span class="sc">+</span> <span class="fu">recip</span>(callNetwork) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">inertia</span>(callNetwork, <span class="at">window =</span> <span class="dv">300</span>) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">recip</span>(callNetwork, <span class="at">window =</span> <span class="dv">300</span>) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">tie</span>(friendshipNetwork) <span class="sc">+</span> <span class="fu">recip</span>(friendshipNetwork) <span class="sc">+</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">same</span>(actors<span class="sc">$</span>gradeType) <span class="sc">+</span> <span class="fu">same</span>(actors<span class="sc">$</span>floor)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>mod03Choice <span class="ot">&lt;-</span> <span class="fu">estimate</span>(windowFormulaChoice,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">model =</span> <span class="st">&quot;DyNAM&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice&quot;</span>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod03Choice)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ inertia(callNetwork) + recip(callNetwork) + </span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     inertia(callNetwork, window = 300) + recip(callNetwork, window = 300) + </span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     tie(friendshipNetwork) + recip(friendshipNetwork) + same(actors$gradeType) + </span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     same(actors$floor), model = &quot;DyNAM&quot;, subModel = &quot;choice&quot;)</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Effects details :</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Object            window</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia callNetwork             </span></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip   callNetwork             </span></span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia callNetwork       300   </span></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip   callNetwork       300   </span></span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie     friendshipNetwork       </span></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip   friendshipNetwork       </span></span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same    actors$gradeType        </span></span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same    actors$floor            </span></span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Estimate Std. Error z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia  4.29828    0.20193 21.2863 &lt; 2.2e-16 ***</span></span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip   -0.48574    0.23205 -2.0932 0.0363293 *  </span></span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia  1.39628    0.36093  3.8685 0.0001095 ***</span></span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip    5.02256    0.73879  6.7983 1.058e-11 ***</span></span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie      1.50593    0.27206  5.5354 3.105e-08 ***</span></span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip    0.62314    0.24975  2.4951 0.0125930 *  </span></span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same     0.44865    0.19815  2.2641 0.0235659 *  </span></span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same    -0.20953    0.18139 -1.1551 0.2480445    </span></span>
+<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 9e-05 </span></span>
+<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -565.9</span></span>
+<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  1147.8 </span></span>
+<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 1148.1 </span></span>
+<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  1180.5 </span></span>
+<span id="cb29-48"><a href="#cb29-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;DyNAM&quot; subModel: &quot;choice&quot;</span></span></code></pre></div>
+<p>All this shows you that you can specify different formula for the
+rate and choice components of the model. This is a key advantage of the
+DyNAM!</p>
+<p>When comparing the information criteria (AIC / BIC) of the different
+models, we see that the time windows explain a lot</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare different specifications of the subModel = &quot;choice&quot;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod02Choice, mod03Choice)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             df      AIC</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mod02Choice  6 1287.912</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mod03Choice  8 1147.804</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare different specifications of the subModel = &quot;rate&quot;</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod03Rate, mod04Rate)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in AIC.default(mod03Rate, mod04Rate): models are not all fitted to the same number of observations</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           df      AIC</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mod03Rate  4 11976.58</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mod04Rate  6 10963.75</span></span></code></pre></div>
+</div>
+<div id="rem-with-goldfish" class="section level3">
+<h3>REM with <code>goldfish</code></h3>
+<p><code>goldfish</code> does not only run DyNAMs; it also runs REMs
+(Butts, 2008). We can now also run REMs using the right-censored
+intervals as introduced in Stadtfeld &amp; Block (2017).</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>allFormulaREM <span class="ot">&lt;-</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  callsDependent <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">inertia</span>(callNetwork) <span class="sc">+</span> <span class="fu">recip</span>(callNetwork) <span class="sc">+</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">inertia</span>(callNetwork, <span class="at">window =</span> <span class="dv">300</span>) <span class="sc">+</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">recip</span>(callNetwork, <span class="at">window =</span> <span class="dv">300</span>) <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">tie</span>(friendshipNetwork) <span class="sc">+</span> <span class="fu">recip</span>(friendshipNetwork) <span class="sc">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">same</span>(actors<span class="sc">$</span>gradeType) <span class="sc">+</span> <span class="fu">same</span>(actors<span class="sc">$</span>floor)</span></code></pre></div>
+<p>And we can estimate this model, to speed up estimation, we can use
+any of the two <code>C</code> implementations of the estimation
+algorithm. Setting the option <code>engine</code> on the
+<code>estimationInit</code> argument, we can choose which version of the
+<code>C</code> code to use. <code>&quot;default_c&quot;</code> implements the same
+algorithm as the default one implemented in plain <code>R</code> code
+that reduces the memory use by exploiting the sparsity of the dyads that
+change the effects’ statistics after each event.
+<code>&quot;gather_compute&quot;</code> implements a version with an overhead of
+memory use, representing the data in a more usual tabular way but
+reducing time estimation.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>mod01REM <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  allFormulaREM, <span class="at">model =</span> <span class="st">&quot;REM&quot;</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">engine =</span> <span class="st">&quot;gather_compute&quot;</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mod01REM <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  allFormulaREM, <span class="at">model =</span> <span class="st">&quot;REM&quot;</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">initialDamping =</span> <span class="dv">40</span>, <span class="at">engine =</span> <span class="st">&quot;default_c&quot;</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod01REM)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; estimate(x = callsDependent ~ 1 + inertia(callNetwork) + recip(callNetwork) + </span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     inertia(callNetwork, window = 300) + recip(callNetwork, window = 300) + </span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     tie(friendshipNetwork) + recip(friendshipNetwork) + same(actors$gradeType) + </span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     same(actors$floor), model = &quot;REM&quot;, estimationInit = list(initialDamping = 40, </span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     engine = &quot;default_c&quot;))</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Effects details :</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           Object            window</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Intercept                         </span></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia   callNetwork             </span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip     callNetwork             </span></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia   callNetwork       300   </span></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip     callNetwork       300   </span></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie       friendshipNetwork       </span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip     friendshipNetwork       </span></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same      actors$gradeType        </span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same      actors$floor            </span></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients :</span></span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            Estimate Std. Error   z-value  Pr(&gt;|z|)    </span></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Intercept -19.71673    0.11613 -169.7865 &lt; 2.2e-16 ***</span></span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia     5.69399    0.16967   33.5596 &lt; 2.2e-16 ***</span></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip      -0.23048    0.14452   -1.5948    0.1108    </span></span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; inertia    -1.54005    0.17862   -8.6221 &lt; 2.2e-16 ***</span></span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip       7.18721    0.16779   42.8342 &lt; 2.2e-16 ***</span></span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tie         0.94057    0.20797    4.5226 6.107e-06 ***</span></span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; recip       0.92988    0.19070    4.8761 1.082e-06 ***</span></span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same        0.31116    0.13364    2.3283    0.0199 *  </span></span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; same       -0.60389    0.12207   -4.9470 7.538e-07 ***</span></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Converged with max abs. score of 0 </span></span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Log-Likelihood: -5657.2</span></span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AIC:  11332 </span></span>
+<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   AICc: 11333 </span></span>
+<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   BIC:  11375 </span></span>
+<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   model: &quot;REM&quot; subModel: &quot;choice&quot;</span></span></code></pre></div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
