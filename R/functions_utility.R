@@ -31,7 +31,6 @@
 #' getDataObjects(list(rownames(objectsEffectsLink)), removeFirst = FALSE)
 #' }
 getDataObjects <- function(namedList, keepOrder = FALSE, removeFirst = TRUE) {
-
   # strip function names
   objNames <- unlist(namedList)
   if (removeFirst) objNames <- unlist(lapply(namedList, "[", -1))
@@ -47,8 +46,9 @@ getDataObjects <- function(namedList, keepOrder = FALSE, removeFirst = TRUE) {
   # # case list(...)
   areList <- grepl("list\\(\\s*(.+)\\s*\\)", objNames)
   .split <- ifelse(areList,
-                  gsub("list\\(\\s*(.+)\\s*\\)", "\\1", objNames),
-                  objNames)
+    gsub("list\\(\\s*(.+)\\s*\\)", "\\1", objNames),
+    objNames
+  )
   .split <- unlist(strsplit(.split, split = "\\s*,\\s*"))
 
   if (!keepOrder) .split <- unique(.split)
@@ -59,7 +59,8 @@ getDataObjects <- function(namedList, keepOrder = FALSE, removeFirst = TRUE) {
     rbind,
     lapply(
       split,
-      function(v) if (length(v) == 1) {
+      \(v) {
+        if (length(v) == 1) {
           data.frame(
             object = v,
             nodeset = NA,
@@ -74,6 +75,7 @@ getDataObjects <- function(namedList, keepOrder = FALSE, removeFirst = TRUE) {
             stringsAsFactors = FALSE
           )
         }
+      }
     )
   )
 
@@ -109,7 +111,7 @@ getElementFromDataObjectTable <- function(x, envir = environment()) {
 # we don't want to have any unnecessary package dependencies.
 # We keep this utility function however,
 # as it may be useful elsewhere...
-is.POSIXct <- function(x) inherits(x, "POSIXct")
+# is.POSIXct <- function(x) inherits(x, "POSIXct")
 
 
 isReservedElementName <- function(x) {
@@ -132,9 +134,9 @@ isReservedElementName <- function(x) {
 #' data("Social_Evolution")
 #' afterSanitize <- sanitizeEvents(calls, "actors")
 #' }
-sanitizeEvents <- function(events, nodes, nodes2 = nodes) {
-  if (is.character(nodes)) nodes <- get(nodes)
-  if (is.character(nodes2)) nodes2 <- get(nodes2)
+sanitizeEvents <- function(events, nodes, nodes2 = nodes, envir = new.env()) {
+  if (is.character(nodes)) nodes <- get(nodes, envir = envir)
+  if (is.character(nodes2)) nodes2 <- get(nodes2, envir = envir)
   if (is.character(events$node)) {
     events$node <- match(events$node, nodes$label)
   }
@@ -147,11 +149,6 @@ sanitizeEvents <- function(events, nodes, nodes2 = nodes) {
   events$time <- as.numeric(events$time)
   events
 }
-
-
-
-
-
 
 #' Reduce preprocess output
 #'
@@ -201,22 +198,24 @@ ReducePreprocess <- function(
     is.null(effectPos) || !is.null(effectPos) && max(effectPos) <= nEffects
   )
 
-  if (type == "withTime") {
-    addTime <- Map(
-      function(x, y) {
+  ReduceEffUpdates <- function(statsChange, eventTime) {
+    reduce <- Map(
+      \(x, y) {
         lapply(
           x,
-          function(z) {
+          \(z) {
             if (is.null(z)) {
               return(NULL)
             } # no changes, no problem
             if (nrow(z) == 1) {
-              return(cbind(time = y, z))
+              return(
+                if (type == "withTime") cbind(time = y, z) else z
+              )
             } # just one update, no problem
 
             discard <- duplicated(z[, c("node1", "node2")], fromLast = TRUE)
             changes <- cbind(
-              time = rep(y, sum(!discard)),
+              time = if (type == "withTime") rep(y, sum(!discard)) else NULL,
               z[!discard, , drop = FALSE]
             )
             if (nrow(changes) == 1) {
@@ -227,58 +226,76 @@ ReducePreprocess <- function(
           }
         ) # multiple updates might be repeated, keep the last
       },
-      preproData$dependentStatsChange, preproData$eventTime
+      statsChange, eventTime
     )
 
-    outDependetStatChange <- lapply(
+    return(lapply(
       seq_len(nEffects),
       function(i) {
-        Reduce(rbind, lapply(addTime, "[[", i))
+        Reduce(rbind, lapply(reduce, "[[", i))
       }
-    )
-  } else if (type == "withoutTime") {
-    whTime <- lapply(
-      preproData$dependentStatsChange,
-      function(x) {
-        lapply(
-          x,
-          function(z) {
-            if (is.null(z)) {
-              return(NULL)
-            } # no changes, no problem
-            if (nrow(z) == 1) {
-              return(z)
-            } # just one update, no problem
-
-            discard <- duplicated(z[, c("node1", "node2")], fromLast = TRUE)
-            changes <- z[!discard, , drop = FALSE]
-            if (nrow(changes) == 1) {
-              return(changes)
-            }
-            changes <- changes[order(changes[, "node1"], changes[, "node2"]), ]
-          }
-        )
-      }
-    ) # multiple updates might be repeated, keep the last
-
-
-    outDependetStatChange <- lapply(
-      seq_len(nEffects),
-      function(i) {
-        Reduce(rbind, lapply(whTime, "[[", i))
-      }
-    )
+    ))
   }
 
-  if (!is.null(effectPos)) {
-    return(outDependetStatChange[effectPos])
+  outDependentStatChange <- ReduceEffUpdates(
+    preproData$dependentStatsChange,
+    preproData$eventTime[preproData$orderEvents == 1]
+  )
+
+  if ((preproData$subModel == "rate" || preproData$model == "REM") &&
+    length(preproData$rightCensoredStatsChange) > 0) {
+    rightCensoredStatChange <- ReduceEffUpdates(
+      preproData$rightCensoredStatsChange,
+      preproData$eventTime[preproData$orderEvents == 2]
+    )
+
+    # combine lists
+    reducedPrepro <- list()
+    for (ii in seq.int(length(outDependentStatChange))) {
+      reducedPrepro[[ii]] <- list(
+        dependent = outDependentStatChange[[ii]],
+        rightCensored = rightCensoredStatChange[[ii]]
+      )
+    }
+
+    if (!is.null(effectPos)) {
+      return(reducedPrepro[effectPos])
+    } else {
+      return(reducedPrepro)
+    }
+  } else if (!is.null(effectPos)) {
+    return(outDependentStatChange[effectPos])
   } else {
-    return(outDependetStatChange)
+    return(outDependentStatChange)
   }
 }
 
+#' Expand a set of changes
+#'
+#' given a `node` and a `replace` value, set the change to all the nodes in
+#' the nodes `set`. Add the `time` to the array if provided.
+#'
+#' @param nodes a numeric vector with the sanitize position of the nodes
+#' @param replace a numeric vector with the replace value
+#' @param time a numeric vector with the time-stamp when the changes happen
+#' @param set a numeric vector with the index id of the node set
+#' @param isTwoMode logical, whether self ties are allow or not
+#'
+#' @return an array with columns `node1`, `node2`, `replace` and `time`
+#' @noRd
+#'
+#' @examples
+#' fillChanges(c(1, 3), c(4, 8), NULL, 1:5)
+fillChanges <- function(nodes, replace, time, set, isTwoMode = FALSE) {
+  times <- ifelse(isTwoMode, length(set), length(set) - 1)
 
-
+  cbind(
+    time = if (!is.null(time)) rep(time, each = times) else NULL,
+    node1 = rep(nodes, each = times),
+    node2 = Reduce(c, lapply(nodes, \(x) set[!set %in% x])),
+    replace = rep(replace, each = times)
+  )
+}
 
 #' update a network (adjacency matrix)
 #'
@@ -319,7 +336,7 @@ UpdateNetwork <- function(network, changeEvents, nodes = NULL, nodes2 = nodes) {
 
 
   if (inherits(changeEvents, "matrix") &&
-      all(c("node1", "node2", "replace") %in% colnames(changeEvents))) {
+    all(c("node1", "node2", "replace") %in% colnames(changeEvents))) {
     changeEvents <- data.frame(changeEvents)
     names(changeEvents)[match(c("node1", "node2"), names(changeEvents))] <-
       c("sender", "receiver")
@@ -346,12 +363,15 @@ UpdateNetwork <- function(network, changeEvents, nodes = NULL, nodes2 = nodes) {
       )
     }
 
-    redEvents <- aggregate(increment ~ sender + receiver, changeEvents, sum)
+    redEvents <- stats::aggregate(
+      increment ~ sender + receiver, changeEvents, sum
+    )
     chIncrement <- match("increment", names(redEvents))
     names(redEvents)[chIncrement] <- "replace"
   } else if ("replace" %in% names(changeEvents)) {
     discard <- duplicated(changeEvents[, c("sender", "receiver")],
-                          fromLast = TRUE)
+      fromLast = TRUE
+    )
     redEvents <- changeEvents[
       !discard,
       c("sender", "receiver", "replace"),
@@ -370,25 +390,29 @@ GetDetailPrint <- function(
   # matrix with the effects in rows and objects in columns,
   # which net or actor att
   maxObjs <- max(objectsEffectsLink, na.rm = TRUE)
-  effectDescription <- matrix(t(
-    apply(
-      objectsEffectsLink, 2,
-      function(x) {
-        notNA <- !is.na(x)
-        objs <- x[notNA]
-        objs <- names(objs[order(objs)])
-        c(objs, rep("", maxObjs - length(objs)))
-      })
-  ),
-  nrow = ncol(objectsEffectsLink),
-  ncol = maxObjs
+  effectDescription <- matrix(
+    t(
+      apply(
+        objectsEffectsLink, 2,
+        function(x) {
+          notNA <- !is.na(x)
+          objs <- x[notNA]
+          objs <- names(objs[order(objs)])
+          c(objs, rep("", maxObjs - length(objs)))
+        }
+      )
+    ),
+    nrow = ncol(objectsEffectsLink),
+    ncol = maxObjs
   )
   # # handle degenerate case one effect one object
-  dimnames(effectDescription) <-  list(
+  dimnames(effectDescription) <- list(
     colnames(objectsEffectsLink),
     if (ncol(effectDescription) == 1) {
       "Object"
-    } else sprintf("Object %d", seq(ncol(effectDescription)))
+    } else {
+      sprintf("Object %d", seq_len(ncol(effectDescription)))
+    }
   )
 
   objectsName <- colnames(effectDescription)
@@ -423,18 +447,20 @@ GetDetailPrint <- function(
       window = vapply(
         parsedformula$windowParameters,
         function(x) ifelse(is.null(x), "", gsub("['\"]", "", x)),
-        character(1))
+        character(1)
+      )
     )
     # reduce object name
     effectDescription[, objectsName] <- t(apply(
       effectDescription,
       1,
-      function(x)
+      \(x) {
         gsub(
           paste0("^(.+)_", gsub(" ", "", x["window"]), "$"),
           "\\1",
           x[objectsName]
         )
+      }
     ))
   }
   if (any(parsedformula$transParameter != "")) {
@@ -466,7 +492,7 @@ GetDetailPrint <- function(
 
   if (!is.null(fixedParameters)) {
     effectDescription <- cbind(effectDescription,
-                               fixed = !is.na(fixedParameters)
+      fixed = !is.na(fixedParameters)
     )
   }
 
@@ -476,12 +502,16 @@ GetDetailPrint <- function(
 
 GetFixed <- function(object) {
   if ("fixed" %in% colnames(object$names)) {
-    fixed <- vapply(
+    vapply(
       object$names[, "fixed"],
       function(x) eval(parse(text = x)),
       logical(1)
     )
+  } else {
+    rep(FALSE, length(object$parameters))
+  }
+}
 
-  } else  fixed <- rep(FALSE, length(object$parameters))
-  fixed
+checkArgsEstimation <- function(variables) {
+
 }

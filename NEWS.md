@@ -1,3 +1,34 @@
+# goldfish 1.6.8
+
+* `checkEvents()` method addresses S3 generic/method consistency.
+* Solves broken link in the bibliography.
+
+# goldfish 1.6.7
+
+* Debug and update yaml workflow files for GitHub Actions.
+* Solve note mismatches generic/method consistency
+
+# goldfish 1.6.6
+
+* Debugging and extend documentation for `GatherPreprocessing()`.
+* Fix note from CRAN checks.
+* Debug issue when using a preprocess init object in `estimate()`.
+* Debug issue with opportunity list in `estimate()` for `DyNAM` models.
+* Fix error in printing output from `estimate()` when using
+  a parameter is fixed to a value.  
+
+# goldfish 1.6.5
+
+* Solves `startTime` and `endTime` bug on `DyNAM` and `REM` models
+  preprocessing.
+* Export `GatherPreprocessing()`. Experimental functionality.
+* Clean unnecessary functions imports.
+* Solves `aes_string()` deprecation.
+* Solves issue on `C++` engine on DyNAM-rate.
+* Enforcing an 80-character line length on C++ code.
+* Comply with code style.
+* Changes that reduce execution time in the R estimation engine.
+
 # goldfish 1.6.4
 
 * Change mentioning of `.GlobalEnv` and drop `goldfishObjects()`.
