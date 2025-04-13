@@ -2,8 +2,8 @@ Encoding: UTF-8
 Package: goldfish
 Type: Package
 Title: Statistical Network Models for Dynamic Network Data
-Version: 1.6.10
-Date: 2024-09-03
+Version: 1.6.12
+Date: 2025-04-13
 Authors@R: c(person("James", "Hollway", role = c("aut", "dtc"), 
                     email = "james.hollway@graduateinstitute.ch",
                     comment = c("IHEID", ORCID = "0000-0002-8361-9647")),
@@ -31,7 +31,7 @@ Description: Tools for fitting statistical network models to dynamic network dat
    Hoffman et al. (2020) <doi:10.1017/nws.2020.3>.
 URL: https://stocnet.github.io/goldfish/
 BugReports: https://github.com/stocnet/goldfish/issues/
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.1.0)
 Imports: Rcpp (>= 1.0.1), changepoint, methods, utils, stats, generics,
         ggplot2, rlang, tibble
 LinkingTo: Rcpp, RcppArmadillo
@@ -39,10 +39,10 @@ Suggests: testthat, knitr, devtools, covr, rmarkdown, pixiedust,
         igraph, ggraph, migraph, manynet, patchwork, broom, lmtest
 VignetteBuilder: knitr
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 NeedsCompilation: yes
 Config/testthat/edition: 3
-Packaged: 2024-09-03 09:09:08 UTC; ualvaro
+Packaged: 2025-04-13 20:46:45 UTC; ualvaro
 Author: James Hollway [aut, dtc] (IHEID,
     <https://orcid.org/0000-0002-8361-9647>),
   Christoph Stadtfeld [aut, dtc],
@@ -58,4 +58,4 @@ Author: James Hollway [aut, dtc] (IHEID,
   Siwei Zhang [ctb]
 Maintainer: Alvaro Uzaheta <ualvaro@ethz.ch>
 Repository: CRAN
-Date/Publication: 2024-09-03 10:00:02 UTC
+Date/Publication: 2025-04-13 21:00:02 UTC

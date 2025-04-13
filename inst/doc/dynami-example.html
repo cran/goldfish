@@ -62,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -600,8 +600,11 @@ proportion of previous friends in the group is high</li>
 leaving model: The first model explains who people want to join (or not
 join), the second explains who people want to leave (or stay with).</p>
 <p>Now let us run goldfish estimation!</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>est.rate.M1 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(formula.rate.M1, <span class="at">model =</span> <span class="st">&quot;DyNAMi&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">summary</span>(est.rate.M1)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>est.rate.M1 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>  formula.rate.M1, <span class="at">model =</span> <span class="st">&quot;DyNAMi&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">engine =</span> <span class="st">&quot;default&quot;</span>)                      </span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>)</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="fu">summary</span>(est.rate.M1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## estimate(x = dependent.events ~ 1 + intercept(network.interactions, 
@@ -612,7 +615,7 @@ join), the second explains who people want to leave (or stay with).</p>
 ##     joining = -1, subType = &quot;proportion&quot;) + same(actors$group, 
 ##     joining = -1, subType = &quot;proportion&quot;) + tie(known.before, 
 ##     joining = -1, subType = &quot;proportion&quot;), model = &quot;DyNAMi&quot;, 
-##     subModel = &quot;rate&quot;)
+##     subModel = &quot;rate&quot;, estimationInit = list(engine = &quot;default&quot;))
 ## 
 ## 
 ## Effects details:
@@ -651,8 +654,10 @@ join), the second explains who people want to leave (or stay with).</p>
 <span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>  formula.choice.M1,</span>
 <span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAMi&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice&quot;</span>,</span>
 <span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">opportunitiesList =</span> opportunities)</span>
-<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>)</span>
-<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="fu">summary</span>(est.choice.M1)</span></code></pre></div>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## Warning: engine = &quot;gather_compute&quot; doesn&#39;t support&quot;opportunitiesList&quot;. engine =&quot;default&quot; is used
+## instead.</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="fu">summary</span>(est.choice.M1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## estimate(x = dependent.events ~ diff(actors$age, subType = &quot;averaged_sum&quot;) + 
@@ -699,18 +704,18 @@ in the past to join groups faster</li>
 <li>egopop (leaving): tendency for individuals who had more interactions
 in the past to leave groups faster</li>
 </ol>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>formula.rate.M2 <span class="ot">&lt;-</span> dependent.events <span class="sc">~</span>  <span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="fu">intercept</span>(network.interactions, <span class="at">joining =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="fu">ego</span>(actors<span class="sc">$</span>age, <span class="at">joining =</span> <span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;centered&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="fu">ego</span>(actors<span class="sc">$</span>age, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;centered&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>age, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>level, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>gender, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>group, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>  <span class="fu">tie</span>(known.before, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>  <span class="fu">size</span>(network.interactions, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>  <span class="fu">egopop</span>(network.past, <span class="at">joining =</span> <span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;normalized&quot;</span>) <span class="sc">+</span></span>
-<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>  <span class="fu">egopop</span>(network.past, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;normalized&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>formula.rate.M2 <span class="ot">&lt;-</span> dependent.events <span class="sc">~</span>  <span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  <span class="fu">intercept</span>(network.interactions, <span class="at">joining =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>  <span class="fu">ego</span>(actors<span class="sc">$</span>age, <span class="at">joining =</span> <span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;centered&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>  <span class="fu">ego</span>(actors<span class="sc">$</span>age, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;centered&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>age, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>level, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>gender, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>group, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>  <span class="fu">tie</span>(known.before, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>  <span class="fu">size</span>(network.interactions, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>  <span class="fu">egopop</span>(network.past, <span class="at">joining =</span> <span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;normalized&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>  <span class="fu">egopop</span>(network.past, <span class="at">joining =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">subType =</span> <span class="st">&quot;normalized&quot;</span>)</span></code></pre></div>
 <p>We add to the choice model:</p>
 <ol style="list-style-type: decimal">
 <li>size: tendency for individuals to join large groups</li>
@@ -721,17 +726,17 @@ a high average number of previous interactions with the group members
 within the last minute</li>
 <li>inertia, window = 300s: same as above, for 5 minutes</li>
 </ol>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>formula.choice.M2 <span class="ot">&lt;-</span> dependent.events <span class="sc">~</span></span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>age, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>level, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>gender, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>group, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>  <span class="fu">alter</span>(actors<span class="sc">$</span>age, <span class="at">subType =</span> <span class="st">&quot;mean&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>  <span class="fu">tie</span>(known.before, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>  <span class="fu">size</span>(network.interactions, <span class="at">subType =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>  <span class="fu">alterpop</span>(network.past, <span class="at">subType =</span> <span class="st">&quot;mean_normalized&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>  <span class="fu">inertia</span>(network.past, <span class="at">window =</span> <span class="dv">60</span>, <span class="at">subType =</span> <span class="st">&quot;mean&quot;</span>) <span class="sc">+</span></span>
-<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>  <span class="fu">inertia</span>(network.past, <span class="at">window =</span> <span class="dv">300</span>, <span class="at">subType =</span> <span class="st">&quot;mean&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>formula.choice.M2 <span class="ot">&lt;-</span> dependent.events <span class="sc">~</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>age, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>  <span class="fu">diff</span>(actors<span class="sc">$</span>level, <span class="at">subType =</span> <span class="st">&quot;averaged_sum&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>gender, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>  <span class="fu">same</span>(actors<span class="sc">$</span>group, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>  <span class="fu">alter</span>(actors<span class="sc">$</span>age, <span class="at">subType =</span> <span class="st">&quot;mean&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>  <span class="fu">tie</span>(known.before, <span class="at">subType =</span> <span class="st">&quot;proportion&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>  <span class="fu">size</span>(network.interactions, <span class="at">subType =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>  <span class="fu">alterpop</span>(network.past, <span class="at">subType =</span> <span class="st">&quot;mean_normalized&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>  <span class="fu">inertia</span>(network.past, <span class="at">window =</span> <span class="dv">60</span>, <span class="at">subType =</span> <span class="st">&quot;mean&quot;</span>) <span class="sc">+</span></span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>  <span class="fu">inertia</span>(network.past, <span class="at">window =</span> <span class="dv">300</span>, <span class="at">subType =</span> <span class="st">&quot;mean&quot;</span>)</span></code></pre></div>
 <p>One can note that we have normalized (using the option
 <code>subType=&quot;mean&quot;</code>) the effects related to previous
 interactions, because we want to avoid time heterogeneity issues (in the
@@ -739,8 +744,11 @@ beginning no interaction has happened, at the end, a lot happened).</p>
 <p>All effects can have different subTypes, please look at the goldfish
 documentation to learn more.</p>
 <p>Now we can run again</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>est.rate.M2 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(formula.rate.M2, <span class="at">model =</span> <span class="st">&quot;DyNAMi&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>)</span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">summary</span>(est.rate.M2)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>est.rate.M2 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  formula.rate.M2, <span class="at">model =</span> <span class="st">&quot;DyNAMi&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">engine =</span> <span class="st">&quot;default&quot;</span>)  </span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>)</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a><span class="fu">summary</span>(est.rate.M2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## estimate(x = dependent.events ~ 1 + intercept(network.interactions, 
@@ -754,7 +762,7 @@ documentation to learn more.</p>
 ##     joining = -1, subType = &quot;identity&quot;) + egopop(network.past, 
 ##     joining = 1, subType = &quot;normalized&quot;) + egopop(network.past, 
 ##     joining = -1, subType = &quot;normalized&quot;), model = &quot;DyNAMi&quot;, 
-##     subModel = &quot;rate&quot;)
+##     subModel = &quot;rate&quot;, estimationInit = list(engine = &quot;default&quot;))
 ## 
 ## 
 ## Effects details:
@@ -796,12 +804,14 @@ documentation to learn more.</p>
 ##   BIC:  2672.4 
 ##   model: &quot;DyNAMi&quot; subModel: &quot;rate&quot;</code></pre>
 <p>and:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>est.choice.M2 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
-<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  formula.choice.M2,</span>
-<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAMi&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice&quot;</span>,</span>
-<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">opportunitiesList =</span> opportunities)</span>
-<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>)</span>
-<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a><span class="fu">summary</span>(est.choice.M2)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>est.choice.M2 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>  formula.choice.M2,</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;DyNAMi&quot;</span>, <span class="at">subModel =</span> <span class="st">&quot;choice&quot;</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>  <span class="at">estimationInit =</span> <span class="fu">list</span>(<span class="at">opportunitiesList =</span> opportunities)</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## Warning: engine = &quot;gather_compute&quot; doesn&#39;t support&quot;opportunitiesList&quot;. engine =&quot;default&quot; is used
+## instead.</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="fu">summary</span>(est.choice.M2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## estimate(x = dependent.events ~ diff(actors$age, subType = &quot;averaged_sum&quot;) + 
@@ -858,17 +868,17 @@ some model selection.</p>
 interaction between the intercept and the joining events. If we want to
 report the actual intercept for joining, we can calculate the following
 (for M2 for example):</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>cov.matrix <span class="ot">&lt;-</span> <span class="fu">vcov</span>(est.rate.M2)</span>
-<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>est.interceptjoining <span class="ot">&lt;-</span> <span class="fu">coef</span>(est.rate.M2)[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">coef</span>(est.rate.M2)[<span class="dv">2</span>]</span>
-<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>se.interceptjoining <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(</span>
-<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>  cov.matrix[<span class="dv">1</span>, <span class="dv">1</span>] <span class="sc">+</span> cov.matrix[<span class="dv">2</span>, <span class="dv">2</span>] <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> cov.matrix[<span class="dv">1</span>, <span class="dv">2</span>]</span>
-<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>)</span>
-<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a>t.interceptjoining <span class="ot">&lt;-</span> est.interceptjoining <span class="sc">/</span> se.interceptjoining</span>
-<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a><span class="fu">sprintf</span>(</span>
-<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a>  <span class="st">&quot;Intercept for joining: %.3f (SE = %.3f, t = %.3f)&quot;</span>,</span>
-<span id="cb36-10"><a href="#cb36-10" tabindex="-1"></a>  est.interceptjoining, se.interceptjoining, t.interceptjoining</span>
-<span id="cb36-11"><a href="#cb36-11" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a>cov.matrix <span class="ot">&lt;-</span> <span class="fu">vcov</span>(est.rate.M2)</span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a>est.interceptjoining <span class="ot">&lt;-</span> <span class="fu">coef</span>(est.rate.M2)[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">coef</span>(est.rate.M2)[<span class="dv">2</span>]</span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a>se.interceptjoining <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(</span>
+<span id="cb40-5"><a href="#cb40-5" tabindex="-1"></a>  cov.matrix[<span class="dv">1</span>, <span class="dv">1</span>] <span class="sc">+</span> cov.matrix[<span class="dv">2</span>, <span class="dv">2</span>] <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> cov.matrix[<span class="dv">1</span>, <span class="dv">2</span>]</span>
+<span id="cb40-6"><a href="#cb40-6" tabindex="-1"></a>)</span>
+<span id="cb40-7"><a href="#cb40-7" tabindex="-1"></a>t.interceptjoining <span class="ot">&lt;-</span> est.interceptjoining <span class="sc">/</span> se.interceptjoining</span>
+<span id="cb40-8"><a href="#cb40-8" tabindex="-1"></a><span class="fu">sprintf</span>(</span>
+<span id="cb40-9"><a href="#cb40-9" tabindex="-1"></a>  <span class="st">&quot;Intercept for joining: %.3f (SE = %.3f, t = %.3f)&quot;</span>,</span>
+<span id="cb40-10"><a href="#cb40-10" tabindex="-1"></a>  est.interceptjoining, se.interceptjoining, t.interceptjoining</span>
+<span id="cb40-11"><a href="#cb40-11" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## [1] &quot;Intercept for joining: -3.434 (SE = 0.089, t = -38.477)&quot;</code></pre>
 <p>This script can be continued by looking at better model
 specifications than the ones provided, or trying to model the
